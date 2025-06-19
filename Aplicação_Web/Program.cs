@@ -1,26 +1,34 @@
-var builder = WebApplication.CreateBuilder(args);
+
+using Aplicação_Web.Servicos;
+using Microsoft.EntityFrameworkCore;
+
+var construtor = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddRazorPages();
+construtor.Services.AddRazorPages();
+construtor.Services.AddDbContext<ContextoBD>(options =>
+{
+    var stringConexao = construtor.Configuration.GetConnectionString("DefaultConnection");
+    options.UseSqlServer(stringConexao);
+});
 
-var app = builder.Build();
+var aplicacao = construtor.Build();
 
 // Configure the HTTP request pipeline.
-if (!app.Environment.IsDevelopment())
+if (!aplicacao.Environment.IsDevelopment())
 {
-    app.UseExceptionHandler("/Error");
+    aplicacao.UseExceptionHandler("/Error");
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-    app.UseHsts();
+    aplicacao.UseHsts();
 }
 
-app.UseHttpsRedirection();
+aplicacao.UseHttpsRedirection();
 
-app.UseRouting();
+aplicacao.UseRouting();
 
-app.UseAuthorization();
+aplicacao.UseAuthorization();
 
-app.MapStaticAssets();
-app.MapRazorPages()
-   .WithStaticAssets();
+aplicacao.MapStaticAssets();
+aplicacao.MapRazorPages().WithStaticAssets();
 
-app.Run();
+aplicacao.Run();
